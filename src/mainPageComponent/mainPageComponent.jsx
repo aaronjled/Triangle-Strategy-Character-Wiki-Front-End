@@ -10,7 +10,7 @@ const MainPageComponent = () => {
         console.log("Let's Create This")
         
         //send request to back-end
-        const apiResponse = await fetch("http://localhost:3001/character", {
+        const apiResponse = await fetch("https://triangle-wiki-api.herokuapp.com/character", {
         method: "POST",
         body: JSON.stringify(newCharacter),
         headers: {
@@ -30,7 +30,7 @@ const MainPageComponent = () => {
     }
     const getCharacters = async () => {
         try{
-            const characters = await fetch("http://localhost:3001/character")
+            const characters = await fetch("https://triangle-wiki-api.herokuapp.com/character")
             const parsedCharacters = await characters.json();
             setCharacters(parsedCharacters.data)
 
