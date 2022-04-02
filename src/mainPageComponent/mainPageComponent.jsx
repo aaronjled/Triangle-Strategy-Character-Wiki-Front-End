@@ -28,6 +28,48 @@ const MainPageComponent = () => {
             //show error message in form
         }            
     }
+     //delete aspect of route
+     const deleteCharacter = async (idToDelete) => {
+        try{ 
+            //send request to back end
+            const apiResponse = await fetch(`https://triangle-wiki-api.herokuapp.com/character/${idToDelete}`, {   
+            method: 'DELETE'
+            })
+            //parse response
+            const parsedResponse = await apiResponse.json()
+            if(parsedResponse.success){
+                const newCharacter = characters.filter(character => character._id !== idToDelete)
+                setCharacters(newCharacter)
+            }
+            else{
+                //TODO
+            }
+            console.log(parsedResponse)
+        }catch(err){
+            console.log(err)
+        }
+        console.log("deleting item ID" + idToDelete)
+       
+         
+    }
+    const updateCharacter = async (idToUpdate, characterToUpdate) => {
+        const apiResponse = await fetch(`https://triangle-wiki-api.herokuapp.com/character/${idToUpdate}`, {
+            method: "PUT",
+            body: JSON.stringify(characterToUpdate),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            const parsedResponse = await apiResponse.json();
+        if(parsedResponse.success){
+        //one line version that uses a function to check the item to see if its the one to update, if not send old version
+            const newCharacter = characters.map(character => character._id === idToUpdate ? characterToUpdate : character)
+            setCharacters(newCharacter)
+        }else{
+            //TODO
+        }
+            
+        }
     const getCharacters = async () => {
         try{
             const characters = await fetch("https://triangle-wiki-api.herokuapp.com/character")
@@ -39,16 +81,17 @@ const MainPageComponent = () => {
             //TODO
         }
     }
-    useEffect(getCharacters, [])
+    useEffect(()=>{getCharacters()}, [])
     return (
         <div>
-        <h1>Hello</h1>
         <NewCharacterComponent
             newCharacterServerError={newCharacterServerError}
             createNewCharacter={createNewCharacter}>
         </NewCharacterComponent>
+        <br></br>
+        <br></br>
         {characters.map((character)=> {
-            return <CharacterComponent key ={character._id} character={character}></CharacterComponent>
+            return <CharacterComponent key ={character._id} character={character} updateCharacter={updateCharacter} deleteCharacter={deleteCharacter}></CharacterComponent>
         })}
         </div>
         )
